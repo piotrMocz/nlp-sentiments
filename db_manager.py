@@ -11,19 +11,12 @@ class DBManager(object):
         self.db.commit()
 
     def insertSpeech(self, filename, vote, party, mentionType):
-        print type(filename)
         if vote:
             vote = "T"
         else:
             vote = "F"
 
-        print type(vote)
-        print type(party)
-        print type(mentionType)
-
-
         c = self.db.cursor()
-        print c
         args = (filename.decode("utf-8").rstrip(), vote.decode("utf-8").rstrip(), party.decode("utf-8").rstrip(), mentionType.decode("utf-8").rstrip())
         try:
             c.execute("INSERT INTO ARGUMENT VALUES (?,?,?,?)", args)

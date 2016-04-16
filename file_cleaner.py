@@ -16,7 +16,12 @@ stemmer = SnowballStemmer("english")
 VERBOSE = True
 
 def cleaningOfWord(wordBeingCleaned):
-    if wordBeingCleaned in [".", "?", "!"]:
+    """
+    Delete all the redundant information encoded in a word.
+    :param wordBeingCleaned: word to be cleaned
+    :return: cleaned word
+    """
+    if wordBeingCleaned in [".", "?", "!"]: # will be needed for ngrams to find out where a sentence finishes.
         return wordBeingCleaned
     wordBeingCleaned = wordBeingCleaned.lower()
     wordBeingCleaned = re.sub('[^A-Za-z]+', '', wordBeingCleaned)
@@ -27,18 +32,18 @@ def cleaningOfWord(wordBeingCleaned):
     return word if word != '' else None
 
 
-def get_files_to_clean(dir):
-    return filter(lambda x: x[0] != '.', sorted(listdir(dir)))
-
-def cleanAndWriteSpeech(fileinfos):
+def cleanAndWriteSpeeches(fileinfos):
+    """
+    Go through files represented by dictionaries, create a record for each in the db, and save clean version of it[file].
+    :param fileinfos:
+    :return:
+    """
     isPositiveVoteChunk = fileinfos[0]["vote"]
     for currFile in fileinfos:
-        #lock.acquire()
         success = manager.insertSpeech(filename=currFile["filename"],
                                        vote = isPositiveVoteChunk,
                                        party = currFile["party"],
                                        mentionType=currFile["mention_type"] )
-        #lock.release()
         if success:
             newFileContent = ""
             with open(DIR_CLEANED_FILES + currFile["filename"], "w+") as writeH:
@@ -73,20 +78,8 @@ if __name__ == "__main__":
     posids = filter_feats(file_info, 'pos')
     print "nr of positive ids: {0}".format(len(posids))
 
-    listOfArticles = get_files_to_clean(getcwd() + DIR_FILES)
-    lock = multiprocessing.Lock()
-    processes = []
-
-    cleanAndWriteSpeech(posids)
-    cleanAndWriteSpeech(negids)
-
-    # for chunk in [posids, negids]:
-    #     process = multiprocessing.Process(target=cleanAndWriteSpeech, args=(chunk, lock))
-    #     processes.append(process)
-    #     process.start()
-    #
-    # for process in processes:
-    #     process.join()
+    cleanAndWriteSpeeches(posids)
+    cleanAndWriteSpeeches(negids)
 
     stop = time.time()
     print "Time spent: ", stop-start

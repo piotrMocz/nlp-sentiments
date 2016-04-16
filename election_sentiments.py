@@ -52,33 +52,33 @@ def filter_feats(infos, feat_type):
     return filter(filter_fun, infos)
 
 
-print 'Current directory: ' + getcwd()
-
-DIR_PREFIX = 'train_data/training_set'
-
-file_info = load_filenames(DIR_PREFIX)
-print 'Sample entry:'
-print file_info[0]
-
-print 'Finding negative ids...'
-negids = filter_feats(file_info, 'neg')
-print 'Sample negative id:'
-print negids[0]
-
-print 'Finding positive features...'
-posids = filter_feats(file_info, 'pos')
-print 'Sample positive id:'
-print posids[0]
-
-print 'Extracting negative features...'
-negfeats = [(word_feats(join(DIR_PREFIX, info['filename'])), 'neg') for info in negids]
-print 'Sample negative feature:'
-print negfeats[0]
-
-print 'Extracting positive features...'
-posfeats = [(word_feats(join(DIR_PREFIX, info['filename'])), 'pos') for info in negids]
-print 'Sample positive feature:'
-print posfeats[0]
+# print 'Current directory: ' + getcwd()
+#
+# DIR_PREFIX = '/train_data/training_set/'
+# DIR_FULL = getcwd() + DIR_PREFIX
+# file_info = load_filenames(DIR_FULL)
+# print 'Sample entry:'
+# print file_info[0]
+#
+# print 'Finding negative ids...'
+# negids = filter_feats(file_info, 'neg')
+# print 'Sample negative id:'
+# print negids[0]
+#
+# print 'Finding positive features...'
+# posids = filter_feats(file_info, 'pos')
+# print 'Sample positive id:'
+# print posids[0]
+#
+# print 'Extracting negative features...'
+# negfeats = [(word_feats(join(DIR_FULL, info['filename'])), 'neg') for info in negids]
+# print 'Sample negative feature:'
+# print negfeats[0]
+#
+# print 'Extracting positive features...'
+# posfeats = [(word_feats(join(DIR_FULL, info['filename'])), 'pos') for info in posids]
+# print 'Sample positive feature:'
+# print posfeats[0]
 
 
 # negids = movie_reviews.fileids('neg')
