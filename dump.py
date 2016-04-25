@@ -22,7 +22,7 @@ DIR_LOG = "./log/"
 
 LOG_NAME = DIR_LOG + "log" + str(datetime.now())
 STOP_CONDITION = 400
-i = 147;
+i = 147
 
 # Crate all sites managerc
 
