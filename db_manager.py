@@ -6,6 +6,8 @@ import sqlite3
 class DBManager(object):
     def __init__(self):
         self.db = sqlite3.connect("speeches.db")
+
+    def create(self):
         c = self.db.cursor()
         c.execute("DROP TABLE IF EXISTS ARGUMENT")
         c.execute("CREATE TABLE ARGUMENT (name text primary key, vote text, isRepublican text, mentionType text)")
@@ -28,17 +30,18 @@ class DBManager(object):
             c.close()
             self.db.commit()
 
-    def get_infos(self, count=None):
+    def get_infos(self, count=None, vote=None):
         c = self.db.cursor()
         c.execute("SELECT * FROM ARGUMENT")
         self.db.commit()
 
-        rows_left = count
+        rows_outputted = 0
 
         for row in c:
-            if rows_left is not None and rows_left > 0:
-                rows_left -= 1
-            else:
-                break
+            if count is not None:
+                if rows_outputted >= count:
+                    break
 
-            yield {"filename": row[0], "vote_bool": row[1] == "T", "mention_type": row[2]}
+            if (vote == row[1]) or (vote is None):
+                rows_outputted += 1
+                yield {"filename": row[0], "vote_bool": row[1] == "T", "mention_type": row[2]}

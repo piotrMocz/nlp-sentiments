@@ -14,6 +14,7 @@ from file_utils import create_dir
 
 
 manager = DBManager()
+manager.create()
 stemmer = SnowballStemmer("english")
 VERBOSE = True
 
