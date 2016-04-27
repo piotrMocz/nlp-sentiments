@@ -26,3 +26,14 @@ class DBManager(object):
         finally:
             c.close()
             self.db.commit()
+
+    def getVote(self, filename):
+        args = (filename.decode("utf-8"),)
+        c = self.db.cursor()
+        try:
+            row = c.execute("SELECT vote FROM argument where name like ?", args).fetchone()
+            return row[0]
+        except:
+            return None
+        finally:
+            c.close()
