@@ -1,8 +1,7 @@
 __author__ = 'Michal'
 
-import multiprocessing
 import time
-from os import listdir, getcwd
+from os import getcwd
 from election_sentiments import load_filenames, filter_feats
 from db_manager import DBManager
 from config import DIR_FILES, DIR_CLEANED_FILES
@@ -38,6 +37,8 @@ def cleanAndWriteSpeeches(fileinfos):
     :param fileinfos:
     :return:
     """
+    print "starting with {0} speeches".format(len(fileinfos))
+    nrOfLongEnoughSpeeches = 0
     isPositiveVoteChunk = fileinfos[0]["vote"]
     for currFile in fileinfos:
         success = manager.insertSpeech(filename=currFile["filename"],
@@ -46,23 +47,27 @@ def cleanAndWriteSpeeches(fileinfos):
                                        mentionType=currFile["mention_type"] )
         if success:
             newFileContent = ""
-            with open(DIR_CLEANED_FILES + currFile["filename"], "w+") as writeH:
-                with open("." + DIR_FILES + "/" + currFile["filename"], "r") as readH:
-                    for line in readH:
-                        for word in line.split():
-                            cleanWord = cleaningOfWord(word)
-                            if cleanWord:
-                                newFileContent += cleanWord + " "
-                    writeH.seek(0)
-                    writeH.write(newFileContent)
-                    writeH.truncate()
 
+            #with open(DIR_CLEANED_FILES + currFile["filename"], "w+") as writeH:
+            with open("." + DIR_FILES + "/" + currFile["filename"], "r") as readH:
+                wordsInArt = 0
+                for line in readH:
+                    for word in line.split():
+                        cleanWord = cleaningOfWord(word)
+                        if cleanWord:
+                            wordsInArt += 1
+                            newFileContent += cleanWord + " "
+                if wordsInArt > 70:
+                    nrOfLongEnoughSpeeches += 1
+                    with open(DIR_CLEANED_FILES + currFile["filename"], "w+") as writeH:
+                        writeH.seek(0)
+                        writeH.write(newFileContent)
+                        writeH.truncate()
+        else:
+            print "db error while saving {0}".format(currFile)
+    print "{0} speeches ok".format(nrOfLongEnoughSpeeches)
 
-
-    else:
-        print "db error while saving {0}".format(currFile)
-
-if __name__ == "__main__":
+def execute():
     start = time.time()
 
 
@@ -83,3 +88,6 @@ if __name__ == "__main__":
 
     stop = time.time()
     print "Time spent: ", stop-start
+
+
+execute()
