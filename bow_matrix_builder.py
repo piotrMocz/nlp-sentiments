@@ -1,4 +1,3 @@
-
 import os
 import time
 import numpy
@@ -100,7 +99,7 @@ def gatherAllWordsFromArticles(listOfArticles, pathToArticles):
     workingListOfOccurrences = []
     mapOfWords = []
     for currentFileName in listOfArticles:
-        with open(pathToArticles + currentFileName) as currentFile:
+        with open(os.path.join(pathToArticles, currentFileName)) as currentFile:
             indexesOfWordsInCurrentFile = []
             for word in currentFile.read().split():
                     if word in words:
@@ -128,15 +127,14 @@ def gatherAllWordsFromArticles(listOfArticles, pathToArticles):
 
 
 if __name__ == '__main__':
-    listOfCleanedArticles = filter(lambda x: x[0] != '.',sorted(os.listdir(DIR_CLEANED_FILES)))
+    listOfCleanedArticles = filter(lambda x: x[0] != '.', sorted(os.listdir(DIR_CLEANED_FILES)))
     amountOfFiles = len(listOfCleanedArticles)
 
     print "Amount of files: ", amountOfFiles
 
     start = time.time()
-    setOfWords , mapOfWords, matrix, dictOfTermOccurrences, listOfWords = gatherAllWordsFromArticles(listOfCleanedArticles, DIR_CLEANED_FILES)
+    setOfWords, mapOfWords, matrix, dictOfTermOccurrences, listOfWords = gatherAllWordsFromArticles(listOfCleanedArticles, DIR_CLEANED_FILES)
     stop = time.time()
-
 
     print "Gathering words done, took: ", stop-start, " seconds"
     print "Amount of words: ", len(setOfWords), "\n"
@@ -162,6 +160,7 @@ if __name__ == '__main__':
                               "idfs" : idfs
                             },
                     path = DIR_DUMP)
+
     stop = time.time()
 
     print "Writing to file done, took: ", stop - start, " seconds\n"
